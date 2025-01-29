@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:lanchonete/models/payment_options.dart';
 import '../models/cart.dart';
 import '../utils/constants.dart';
 
@@ -8,16 +9,17 @@ class OrderService {
 
   OrderService({http.Client? client}) : _client = client ?? http.Client();
 
-  Future<List<String>> getPaymentOptions() async {
+  Future<List<PaymentOptions>> getPaymentOptions() async {
     try {
       final response = await _client.get(
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
+        Uri.parse(
+            '${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
-        return data.map((option) => option.toString()).toList();
+        return data.map((option) => PaymentOptions.fromJson(option)).toList();
       } else {
         throw Exception('Failed to load payment options');
       }
@@ -32,11 +34,13 @@ class OrderService {
     required String deliveryAddress,
   }) async {
     try {
-      final orderItems = cart.items.values.map((item) => {
-        'productId': item.product.id,
-        'quantity': item.quantity,
-        'price': item.product.price,
-      }).toList();
+      final orderItems = cart.items.values
+          .map((item) => {
+                'productId': item.product.id,
+                'quantity': item.quantity,
+                'price': item.product.price,
+              })
+          .toList();
 
       final orderData = {
         'items': orderItems,

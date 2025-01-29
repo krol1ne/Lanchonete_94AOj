@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'product.dart';
+import 'package:lanchonete/contracts/product_contract.dart';
 
 class CartItem {
-  final Product product;
+  final ProductContract product;
   int quantity;
 
   CartItem({
@@ -28,7 +28,7 @@ class Cart with ChangeNotifier {
     return total;
   }
 
-  void addItem(Product product) {
+  void addItem(ProductContract product) {
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,

@@ -16,25 +16,25 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _login() async {
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, '/products');
-    }
-    // if (_formKey.currentState!.validate()) {
-    //   try {
-    //     final authService = Provider.of<AuthService>(context, listen: false);
-    //     await authService.login(
-    //       email: _emailController.text,
-    //       password: _passwordController.text,
-    //     );
-    //     if (mounted) {
-    //       Navigator.pushReplacementNamed(context, '/products');
-    //     }
-    //   } catch (e) {
-    //     setState(() {
-    //       _errorMessage = e.toString();
-    //     });
-    //   }
+    // if (mounted) {
+    //   Navigator.pushReplacementNamed(context, '/products');
     // }
+    if (_formKey.currentState!.validate()) {
+      try {
+        final authService = Provider.of<AuthService>(context, listen: false);
+        await authService.login(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, '/products');
+        }
+      } catch (e) {
+        setState(() {
+          _errorMessage = e.toString();
+        });
+      }
+    }
   }
 
   @override

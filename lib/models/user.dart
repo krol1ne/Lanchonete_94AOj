@@ -12,7 +12,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       email: json['email'],
-      name: json['name'],
+      name: json['userName'],
       token: json['token'],
     );
   }
@@ -20,7 +20,7 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'email': email,
-      'name': name,
+      'UserName': name,
       'token': token,
     };
   }

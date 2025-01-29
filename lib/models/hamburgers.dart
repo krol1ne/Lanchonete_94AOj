@@ -1,25 +1,31 @@
-class Hamburgers {
-  final int id;
+import 'package:lanchonete/contracts/product_contract.dart';
+
+class Hamburgers extends ProductContract {
   final List<String> images;
-  final String title;
   final String description;
   final Values values;
 
   Hamburgers({
-    required this.id,
     required this.images,
-    required this.title,
     required this.description,
     required this.values,
+    required super.imageUrl,
+    required super.name,
+    required super.price,
+    required super.id,
   });
 
+  @override
   factory Hamburgers.fromJson(Map<String, dynamic> json) {
+    final _images = List<String>.from(json['image']);
     return Hamburgers(
-      id: json['id'],
       images: List<String>.from(json['image']),
-      title: json['title'],
+      name: json['title'],
       description: json['description'],
       values: Values.fromJson(json['values']),
+      imageUrl: _images[0] ?? "",
+      price: 0,
+      id: json['id'],
     );
   }
 
@@ -28,7 +34,7 @@ class Hamburgers {
     return {
       'id': id,
       'image': images,
-      'title': title,
+      'title': name,
       'description': description,
       'values': values.toJson(),
     };

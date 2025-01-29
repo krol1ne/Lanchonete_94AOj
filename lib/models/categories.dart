@@ -9,6 +9,7 @@ class Categories {
     required this.link,
   });
 
+  @override
   factory Categories.fromJson(Map<String, dynamic> json) {
     return Categories(
       id: json['id'],

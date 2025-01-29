@@ -1,25 +1,27 @@
-class Appetizers {
-  final int id;
-  final String image;
-  final String title;
+import 'package:lanchonete/contracts/product_contract.dart';
+
+class Appetizers extends ProductContract {
   final String description;
   final ItemValues values;
 
   Appetizers({
-    required this.id,
-    required this.image,
-    required this.title,
     required this.description,
     required this.values,
+    required super.imageUrl,
+    required super.name,
+    required super.price,
+    required super.id,
   });
 
   // Factory constructor to create an Item from JSON
+  @override
   factory Appetizers.fromJson(Map<String, dynamic> json) {
     return Appetizers(
       id: json['id'],
-      image: json['image'],
-      title: json['title'],
+      imageUrl: json['image'],
+      name: json['title'],
       description: json['description'],
+      price: 0,
       values: ItemValues.fromJson(json['values']),
     );
   }
@@ -28,8 +30,8 @@ class Appetizers {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'image': image,
-      'title': title,
+      'image': imageUrl,
+      'title': name,
       'description': description,
       'values': values.toJson(),
     };

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lanchonete/contracts/product_contract.dart';
+import 'package:lanchonete/models/categories.dart';
 import 'package:provider/provider.dart';
 import '../models/cart.dart';
-import '../models/product.dart';
 import '../services/product_service.dart';
-import 'cart_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -16,8 +16,8 @@ class _ProductsScreenState extends State<ProductsScreen>
     with SingleTickerProviderStateMixin {
   final ProductService _productService = ProductService();
   late TabController _tabController;
-  List<String> _categories = [];
-  Map<String, List<Product>> _productsByCategory = {};
+  List<Categories> _categories = [];
+  Map<String, List<ProductContract>> _productsByCategory = {};
   bool _isLoading = true;
 
   @override
@@ -30,7 +30,7 @@ class _ProductsScreenState extends State<ProductsScreen>
     try {
       final categories = await _productService.getCategories();
       setState(() {
-        _categories = categories.cast<String>();
+        _categories = categories;
         _tabController = TabController(length: categories.length, vsync: this);
       });
       await _loadAllProducts();
@@ -55,10 +55,10 @@ class _ProductsScreenState extends State<ProductsScreen>
       if (mounted) {
         setState(() {
           _productsByCategory = {
-            'Hamburgers': products[0],
-            'Appetizers': products[1],
-            'Desserts': products[2],
-            'Beverages': products[3],
+            'hamburgers': products[0],
+            'porcoes': products[1],
+            'sobremesas': products[2],
+            'bebidas': products[3],
           };
           _isLoading = false;
         });
@@ -89,8 +89,9 @@ class _ProductsScreenState extends State<ProductsScreen>
             : TabBar(
                 controller: _tabController,
                 isScrollable: true,
-                tabs:
-                    _categories.map((category) => Tab(text: category)).toList(),
+                tabs: _categories
+                    .map((category) => Tab(text: category.text))
+                    .toList(),
               ),
         actions: [
           Stack(
@@ -125,7 +126,7 @@ class _ProductsScreenState extends State<ProductsScreen>
           : TabBarView(
               controller: _tabController,
               children: _categories.map((category) {
-                final products = _productsByCategory[category] ?? [];
+                final products = _productsByCategory[category.link] ?? [];
                 return RefreshIndicator(
                   onRefresh: _loadAllProducts,
                   child: GridView.builder(
@@ -148,7 +149,7 @@ class _ProductsScreenState extends State<ProductsScreen>
 }
 
 class ProductCard extends StatelessWidget {
-  final Product product;
+  final ProductContract product;
 
   const ProductCard({
     super.key,
@@ -181,8 +182,18 @@ class ProductCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                // if (product is Hamburgers)
+                //   Text(
+                //     'Single: \$${(product as Hamburgers).values.single.toStringAsFixed(2)}',
+                //     style: const TextStyle(
+                //       color: Colors.grey,
+                //       fontSize: 14,
+                //     ),
+                //   ),
+
                 Text(
                   '\$${product.price.toStringAsFixed(2)}',
+                  //fazer um if para ver se vem do value se n vem do value vem do price
                   style: const TextStyle(
                     color: Colors.green,
                     fontSize: 14,

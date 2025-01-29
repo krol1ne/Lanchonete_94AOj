@@ -1,35 +1,34 @@
-class Beverages {
-  final int id;
-  final String image;
-  final String title;
+import 'package:lanchonete/contracts/product_contract.dart';
+
+class Beverages extends ProductContract {
   final String description;
-  final int value;
 
   Beverages({
-    required this.id,
-    required this.image,
-    required this.title,
     required this.description,
-    required this.value,
+    required super.imageUrl,
+    required super.name,
+    required super.price,
+    required super.id,
   });
 
+  @override
   factory Beverages.fromJson(Map<String, dynamic> json) {
     return Beverages(
       id: json['id'],
-      image: json['image'],
-      title: json['title'],
+      imageUrl: json['image'],
+      name: json['title'],
+      price: json['value'].toDouble(),
       description: json['description'],
-      value: json['value'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'image': image,
-      'title': title,
+      'image': imageUrl,
+      'title': name,
       'description': description,
-      'value': value,
+      'value': price,
     };
   }
 }

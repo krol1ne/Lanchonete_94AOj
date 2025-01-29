@@ -5,7 +5,6 @@ import 'package:lanchonete/models/beverages.dart';
 import 'package:lanchonete/models/categories.dart';
 import 'package:lanchonete/models/dessert.dart';
 import 'package:lanchonete/models/hamburgers.dart';
-import '../models/product.dart';
 import '../utils/constants.dart';
 
 class ProductService {
@@ -15,13 +14,13 @@ class ProductService {
 
   Future<List<Categories>> getCategories() async {
     final response = await _client.get(
-      Uri.parse('${ApiConstants.baseUrl}${ApiConstants.categories}'),
+      Uri.parse('${ApiConstants.baseUrl}${ApiConstants.categoriesEndpoint}'),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      return data.map((category) => Categories.toString()).toList();
+      return data.map((json) => Categories.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load categories');
     }
@@ -35,6 +34,7 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      print('getHamburgers');
       return data.map((json) => Hamburgers.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load hamburgers');
@@ -49,6 +49,7 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      print('getAppetizers');
       return data.map((json) => Appetizers.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load appetizers');
@@ -63,6 +64,7 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      print('getDesserts');
       return data.map((json) => Dessert.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load desserts');
@@ -77,40 +79,10 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
+      print('getBeverages');
       return data.map((json) => Beverages.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load beverages');
-    }
-  }
-
-  Future<List<Product>> getProducts() async {
-    try {
-      final response =
-          await _client.get(Uri.parse('${ApiConstants.baseUrl}/products'));
-
-      if (response.statusCode == 200) {
-        final List<dynamic> productsJson = json.decode(response.body);
-        return productsJson.map((json) => Product.fromJson(json)).toList();
-      } else {
-        throw Exception('Failed to load products');
-      }
-    } catch (e) {
-      throw Exception('Failed to load products: $e');
-    }
-  }
-
-  Future<Product> getProductById(int id) async {
-    try {
-      final response =
-          await _client.get(Uri.parse('${ApiConstants.baseUrl}/products/$id'));
-
-      if (response.statusCode == 200) {
-        return Product.fromJson(json.decode(response.body));
-      } else {
-        throw Exception('Failed to load product');
-      }
-    } catch (e) {
-      throw Exception('Failed to load product: $e');
     }
   }
 }

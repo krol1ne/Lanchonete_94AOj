@@ -1,20 +1,22 @@
 class Categories {
-  final int id;
+  final String id;
   final String text;
   final String link;
+  final int number;
 
   Categories({
     required this.id,
     required this.text,
     required this.link,
+    required this.number,
   });
 
-  @override
   factory Categories.fromJson(Map<String, dynamic> json) {
     return Categories(
-      id: json['id'],
-      text: json['text'],
-      link: json['link'],
+      id: json['id']?.toString() ?? '',
+      text: json['text']?.toString() ?? '',
+      link: json['link']?.toString() ?? '',
+      number: json['number'] is int ? json['number'] : int.tryParse(json['number']?.toString() ?? '0') ?? 0,
     );
   }
 
@@ -23,6 +25,7 @@ class Categories {
       'id': id,
       'text': text,
       'link': link,
+      'number': number,
     };
   }
 }

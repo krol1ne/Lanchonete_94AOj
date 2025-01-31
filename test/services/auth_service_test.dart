@@ -7,6 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:lanchonete/services/auth_service.dart';
 import 'package:lanchonete/models/user.dart';
 
+import '../mocks/mock_http_client.mocks.dart';
+
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
 @GenerateMocks([http.Client])

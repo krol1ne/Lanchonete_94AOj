@@ -13,20 +13,19 @@ class Appetizers extends ProductContract {
     required super.id,
   });
 
-  // Factory constructor to create an Item from JSON
   @override
   factory Appetizers.fromJson(Map<String, dynamic> json) {
+    final values = ItemValues.fromJson(json['values']);
     return Appetizers(
       id: json['id'],
       imageUrl: json['image'],
       name: json['title'],
       description: json['description'],
-      price: 0,
-      values: ItemValues.fromJson(json['values']),
+      values: values,
+      price: values.small ?? values.large ?? 0.0, // Use small price as default, fallback to large if small is null
     );
   }
 
-  // Method to convert an Item to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -47,15 +46,13 @@ class ItemValues {
     this.large,
   });
 
-  // Factory constructor to create ItemValues from JSON
   factory ItemValues.fromJson(Map<String, dynamic> json) {
     return ItemValues(
-      small: json['small'] != null ? json['small'].toDouble() : null,
-      large: json['large'] != null ? json['large'].toDouble() : null,
+      small: json['small'] != null ? (json['small'] as num).toDouble() : null,
+      large: json['large'] != null ? (json['large'] as num).toDouble() : null,
     );
   }
 
-  // Method to convert ItemValues to JSON
   Map<String, dynamic> toJson() {
     return {
       'small': small,

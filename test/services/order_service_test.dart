@@ -4,9 +4,11 @@ import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:lanchonete/services/order_service.dart';
-import 'package:lanchonete/models/cart.dart';
-import 'package:lanchonete/models/product.dart';
+import 'package:lanchonete/models/payment_options.dart';
+import 'package:lanchonete/models/create_order.dart';
 import 'package:lanchonete/utils/constants.dart';
+
+import '../mocks/mock_http_client.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
@@ -21,89 +23,72 @@ void main() {
   group('OrderService', () {
     test('getPaymentOptions returns list of payment options on success',
         () async {
-      final paymentOptions = ['Credit Card', 'Debit Card', 'Cash'];
+      final mockResponse = [
+        {'id': '1', 'number': 1, 'text': 'Credit Card'},
+        {'id': '2', 'number': 2, 'text': 'Debit Card'}
+      ];
 
       when(mockClient.get(
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
+        Uri.parse(
+            '${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
         headers: {'Content-Type': 'application/json'},
-      )).thenAnswer((_) async =>
-          http.Response(json.encode(paymentOptions), 200));
+      )).thenAnswer((_) async => http.Response(json.encode(mockResponse), 200));
 
       final result = await orderService.getPaymentOptions();
-      expect(result, equals(paymentOptions));
+
+      expect(result, isA<List<PaymentOptions>>());
+      expect(result.length, equals(2));
+      expect(result[0].id, equals('1'));
+      expect(result[0].text, equals('Credit Card'));
+      expect(result[1].id, equals('2'));
+      expect(result[1].text, equals('Debit Card'));
     });
 
     test('getPaymentOptions throws exception on error', () async {
       when(mockClient.get(
-        Uri.parse('${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
+        Uri.parse(
+            '${ApiConstants.baseUrl}${ApiConstants.paymentOptionsEndpoint}'),
         headers: {'Content-Type': 'application/json'},
       )).thenAnswer((_) async => http.Response('Server error', 500));
 
-      expect(() => orderService.getPaymentOptions(),
-          throwsA(isA<Exception>()));
+      expect(() => orderService.getPaymentOptions(), throwsException);
     });
 
-    test('createOrder returns order details on success', () async {
-      final cart = Cart();
-      cart.addItem(
-        Product(
-          id: 1,
-          name: 'Test Burger',
-          description: 'Test Description',
-          price: 10.99,
-          imageUrl: 'http://example.com/burger.jpg',
-          category: 'Hamburgers',
-        ),
-      );
+    test('getCreateOrder returns list of orders on success', () async {
+      final mockResponse = [
+        {
+          'title': 'Order #1',
+          'number': 1,
+          'payment_option': 'Credit Card',
+          'order_number': 'ORD001',
+          'created_at': '2025-01-30T21:51:10-03:00',
+          'menssage': 'Order created successfully',
+          'details': {'items': [], 'total': 99.99}
+        }
+      ];
 
-      final expectedResponse = {
-        'orderId': '12345',
-        'status': 'confirmed',
-        'totalAmount': 10.99,
-      };
-
-      when(mockClient.post(
+      when(mockClient.get(
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.createOrderEndpoint}'),
         headers: {'Content-Type': 'application/json'},
-        body: any,
-      )).thenAnswer((_) async =>
-          http.Response(json.encode(expectedResponse), 200));
+      )).thenAnswer((_) async => http.Response(json.encode(mockResponse), 200));
 
-      final result = await orderService.createOrder(
-        cart: cart,
-        paymentMethod: 'Credit Card',
-        deliveryAddress: '123 Test St',
-      );
+      final result = await orderService.getCreateOrder();
 
-      expect(result, equals(expectedResponse));
+      expect(result, isA<List<CreateOrder>>());
+      expect(result.length, equals(1));
+      expect(result[0].title, equals('Order #1'));
+      expect(result[0].number, equals(1));
+      expect(result[0].paymentOption, equals('Credit Card'));
+      expect(result[0].orderNumber, equals('ORD001'));
     });
 
-    test('createOrder throws exception on error', () async {
-      final cart = Cart();
-      cart.addItem(
-        Product(
-          id: 1,
-          name: 'Test Burger',
-          description: 'Test Description',
-          price: 10.99,
-          imageUrl: 'http://example.com/burger.jpg',
-          category: 'Hamburgers',
-        ),
-      );
-
-      when(mockClient.post(
+    test('getCreateOrder throws exception on error', () async {
+      when(mockClient.get(
         Uri.parse('${ApiConstants.baseUrl}${ApiConstants.createOrderEndpoint}'),
         headers: {'Content-Type': 'application/json'},
-        body: any,
       )).thenAnswer((_) async => http.Response('Server error', 500));
 
-      expect(
-          () => orderService.createOrder(
-                cart: cart,
-                paymentMethod: 'Credit Card',
-                deliveryAddress: '123 Test St',
-              ),
-          throwsA(isA<Exception>()));
+      expect(() => orderService.getCreateOrder(), throwsException);
     });
   });
 }

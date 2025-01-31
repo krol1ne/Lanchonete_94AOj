@@ -11,6 +11,8 @@ class CartItem {
   });
 
   double get total => product.price * quantity;
+
+  get variant => null;
 }
 
 class Cart with ChangeNotifier {

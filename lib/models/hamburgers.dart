@@ -18,18 +18,18 @@ class Hamburgers extends ProductContract {
   @override
   factory Hamburgers.fromJson(Map<String, dynamic> json) {
     final _images = List<String>.from(json['image']);
+    final values = Values.fromJson(json['values']);
     return Hamburgers(
-      images: List<String>.from(json['image']),
+      images: _images,
       name: json['title'],
       description: json['description'],
-      values: Values.fromJson(json['values']),
-      imageUrl: _images[0] ?? "",
-      price: 0,
+      values: values,
+      imageUrl: _images.isNotEmpty ? _images[0] : "",
+      price: values.single, // Use single price as default
       id: json['id'],
     );
   }
 
-  // Method to convert a Product to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -50,15 +50,13 @@ class Values {
     required this.combo,
   });
 
-  // Factory constructor to create Values from JSON
   factory Values.fromJson(Map<String, dynamic> json) {
     return Values(
-      single: json['single'].toDouble(),
-      combo: json['combo'].toDouble(),
+      single: (json['single'] as num).toDouble(),
+      combo: (json['combo'] as num).toDouble(),
     );
   }
 
-  // Method to convert Values to JSON
   Map<String, dynamic> toJson() {
     return {
       'single': single,

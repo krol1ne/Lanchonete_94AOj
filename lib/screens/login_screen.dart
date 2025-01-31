@@ -16,14 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _login() async {
-    // if (mounted) {
-    //   Navigator.pushReplacementNamed(context, '/products');
-    // }
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _errorMessage = null; // Clear previous error
+      });
+
       try {
         final authService = Provider.of<AuthService>(context, listen: false);
         await authService.login(
-          email: _emailController.text,
+          email: _emailController.text.trim(),
           password: _passwordController.text,
         );
         if (mounted) {
@@ -33,6 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _errorMessage = e.toString();
         });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_errorMessage ?? 'An error occurred'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -51,8 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/logo.jpeg',
-                height: 120,
+                'assets/images/logo.png',
+                height: 250,
               ),
               const SizedBox(height: 32),
               TextFormField(
@@ -85,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              if (_errorMessage != null)
+              if (_errorMessage != null && _errorMessage!.isNotEmpty)
                 Text(
                   _errorMessage!,
                   style: const TextStyle(color: Colors.red),

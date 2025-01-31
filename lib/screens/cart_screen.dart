@@ -1,9 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/cart.dart';
+import '../models/create_order.dart';
+import '../services/order_service.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
+
+  Future<void> _handleCheckout(BuildContext context, Cart cart) async {
+    try {
+      final orderService = OrderService();
+
+      // Convert cart items to order items
+      final orderItems = cart.items.entries.map((entry) {
+        final item = entry.value;
+        return OrderItem(
+          id: item.product.id,
+          quantity: item.quantity,
+          variant: item.variant,
+          title: item.product.name,
+          value: item.product.price,
+        );
+      }).toList();
+
+      // Navigate to payment screen and wait for result
+      final paymentOption = await Navigator.of(context).pushNamed('/payment');
+
+      if (paymentOption != null) {
+        // Create and submit order
+        final order = CreateOrder(
+          items: orderItems,
+          paymentOption: paymentOption as String,
+        );
+
+        await orderService.createOrder(order);
+
+        // Clear cart after successful order
+        cart.clear();
+
+        // Show success message and navigate back to home
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Order placed successfully!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.of(context).pushReplacementNamed('/');
+        }
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to place order: $error'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +95,7 @@ class CartScreen extends StatelessWidget {
                   TextButton(
                     onPressed: cart.totalAmount <= 0
                         ? null
-                        : () {
-                            Navigator.of(context).pushNamed('/order-summary');
-                          },
+                        : () => _handleCheckout(context, cart),
                     child: const Text('CHECKOUT'),
                   )
                 ],
@@ -101,7 +155,8 @@ class CartItemWidget extends StatelessWidget {
           context: context,
           builder: (ctx) => AlertDialog(
             title: const Text('Are you sure?'),
-            content: const Text('Do you want to remove the item from the cart?'),
+            content:
+                const Text('Do you want to remove the item from the cart?'),
             actions: [
               TextButton(
                 child: const Text('No'),

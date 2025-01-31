@@ -7,6 +7,8 @@ import 'package:lanchonete/screens/login_screen.dart';
 import 'package:lanchonete/services/auth_service.dart';
 import 'package:lanchonete/models/user.dart';
 
+import 'login_screen_test.mocks.dart';
+
 @GenerateMocks([AuthService])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +53,8 @@ void main() {
           child: const LoginScreen(),
         ),
         routes: {
-          '/products': (context) => const Scaffold(body: Text('Products Screen')),
+          '/products': (context) =>
+              const Scaffold(body: Text('Products Screen')),
         },
       ),
     );
@@ -65,8 +68,7 @@ void main() {
     expect(find.text('Products Screen'), findsOneWidget);
   });
 
-  testWidgets('LoginScreen handles login failure',
-      (WidgetTester tester) async {
+  testWidgets('LoginScreen handles login failure', (WidgetTester tester) async {
     when(mockAuthService.login(
       email: anyNamed('email'),
       password: anyNamed('password'),
@@ -83,8 +85,7 @@ void main() {
 
     await tester.enterText(
         find.byType(TextFormField).first, 'test@example.com');
-    await tester.enterText(
-        find.byType(TextFormField).last, 'wrong-password');
+    await tester.enterText(find.byType(TextFormField).last, 'wrong-password');
 
     await tester.tap(find.byType(ElevatedButton));
     await tester.pumpAndSettle();

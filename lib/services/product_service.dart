@@ -34,7 +34,6 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print('getHamburgers');
       return data.map((json) => Hamburgers.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load hamburgers');
@@ -49,7 +48,6 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print('getAppetizers');
       return data.map((json) => Appetizers.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load appetizers');
@@ -64,7 +62,6 @@ class ProductService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
-      print('getDesserts');
       return data.map((json) => Dessert.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load desserts');

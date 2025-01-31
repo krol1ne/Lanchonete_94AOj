@@ -1,0 +1,121 @@
+flutter/ephemeral/
+
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+*.g.dart
+*.freezed.dart
+
+# Web related
+lib/generated_plugin_registrant.dart
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Visual Studio user-specific files.
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio build-related files
+x64/
+x86/
+
+# Visual Studio cache files
+# files ending in .cache can be ignored
+*.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
+
+# Local development files
+.env
+.env.local
+*.env.json
+
+# Generated files
+lib/**/*.g.dart
+lib/**/*.freezed.dart
+lib/**/*.mocks.dart
+
+# Build outputs
+build/
+/build/
+.dart_tool/
+.packages
+
+# IDE specific files
+.vscode/
+.idea/
+*.iml
+*.iws
+.idea_modules/
+
+# Flutter specific
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+*.g.dart
+*.freezed.dart
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# Coverage reports
+coverage/
+.test_coverage.dart
+*.lcov
+
+# Local development configuration
+*.local
+*.local.*
+
+# Recently modified files that haven't been committed
+lib/models/cart.dart
+lib/screens/cart_screen.dart
+lib/services/order_service.dart
+lib/models/create_order.dart
